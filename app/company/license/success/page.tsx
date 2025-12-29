@@ -6,7 +6,9 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { createClient } from '@/lib/supabase';
 
-export default function LicenseSuccess() {
+import { Suspense } from 'react';
+
+function LicenseSuccessContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const licenseId = searchParams.get('id');
@@ -145,5 +147,17 @@ export default function LicenseSuccess() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function LicenseSuccess() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-black flex items-center justify-center">
+                <div className="text-white/50">Loading...</div>
+            </div>
+        }>
+            <LicenseSuccessContent />
+        </Suspense>
     );
 }

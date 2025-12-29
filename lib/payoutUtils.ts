@@ -93,10 +93,16 @@ export async function distributeLicensePayout(
                     .eq('contributor_id', contribution.contributor_id);
             }
 
+            // Handle potential array or object for contributor relation
+            const contributorData = contribution.contributor as any;
+            const contributorName = Array.isArray(contributorData)
+                ? contributorData[0]?.name
+                : contributorData?.name;
+
             distributions.push({
                 contributionId: contribution.contribution_id,
                 contributorId: contribution.contributor_id,
-                contributorName: contribution.contributor?.name || 'Unknown',
+                contributorName: contributorName || 'Unknown',
                 amount: share,
                 weight,
             });
