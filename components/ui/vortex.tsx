@@ -15,6 +15,7 @@ interface VortexProps {
     baseRadius?: number;
     rangeRadius?: number;
     backgroundColor?: string;
+    variant?: "default" | "singularity" | "neural-web" | "concentric-circles" | "sine-wave";
 }
 
 export const Vortex = (props: VortexProps) => {
@@ -136,13 +137,86 @@ export const Vortex = (props: VortexProps) => {
 
         x = particleProps[i];
         y = particleProps[i2];
-        n = noise3DRef.current(x * xOff, y * yOff, tick * zOff) * noiseSteps * TAU;
-        vx = lerp(particleProps[i3], Math.cos(n), 0.5);
-        vy = lerp(particleProps[i4], Math.sin(n), 0.5);
+
+        if (props.variant === "singularity") {
+            const dx = x - center[0];
+            const dy = y - center[1];
+            // Calculate angle from center
+            const angleToCenter = Math.atan2(dy, dx);
+            // Tangent angle (for rotation) + slight inward pull
+            const spiralAngle = angleToCenter + Math.PI / 2 + 0.2;
+
+            // Get noise value
+            const noise = noise3DRef.current(x * xOff, y * yOff, tick * zOff) * noiseSteps * TAU;
+
+            // Blend noise and spiral (mostly spiral, some noise)
+            n = spiralAngle + noise * 0.1;
+        } else if (props.variant === "neural-web") {
+            // Get base noise
+            const noise = noise3DRef.current(x * xOff, y * yOff, tick * zOff) * noiseSteps * TAU;
+
+            // Quantize the angle to 4 cardinal directions (0, 90, 180, 270 degrees)
+            // This creates the "circuit board" / grid movement
+            const snapAngle = Math.round(noise / (Math.PI / 2)) * (Math.PI / 2);
+
+            // Add a tiny bit of original noise back so it's not perfectly robotic
+            n = snapAngle + (noise * 0.1);
+        } else if (props.variant === "concentric-circles") {
+            const dx = x - center[0];
+            const dy = y - center[1];
+            // Calculate angle from center
+            const angleToCenter = Math.atan2(dy, dx);
+
+            // Tangent angle = angleToCenter + 90 degrees (PI/2)
+            // This forces particles to move perpendicular to the radius, creating a circle
+            const tangentAngle = angleToCenter + Math.PI / 2;
+
+            // Add very slight noise for organic variation, or keep it 0 for perfect circles
+            const noise = noise3DRef.current(x * xOff, y * yOff, tick * zOff) * noiseSteps * TAU;
+
+            n = tangentAngle + (noise * 0.05);
+        } else if (props.variant === "sine-wave") {
+            // Create a flowing sine wave pattern
+            // Increased frequency (0.004) and amplitude (1.5) for more visible waves
+            // Changed + tick to - tick so the wave travels Left -> Right
+            const wave = Math.sin(x * 0.004 - tick * 0.005) * 1.5;
+
+            // Reduced noise (0.1) for cleaner lines
+            const noise = noise3DRef.current(x * xOff, y * yOff, tick * zOff) * noiseSteps * TAU;
+
+            // Base flow is to the right (0 radians) + wave angle + slight noise
+            n = wave + (noise * 0.1);
+        } else {
+            n = noise3DRef.current(x * xOff, y * yOff, tick * zOff) * noiseSteps * TAU;
+        }
+
+        if (props.variant === "sine-wave") {
+            // Transverse Wave Physics:
+            // Particles move ONLY up and down (vy), while the wave travels left-to-right.
+            // y = sin(kx - wt) -> vy = d/dt(y) = -w * cos(kx - wt)
+
+            const freq = 0.004;
+            const speedFactor = 0.005;
+
+            // vx is 0 (no horizontal movement for particles)
+            vx = 0;
+
+            // vy oscillates based on the wave derivative
+            // We add a bit of noise to x to make it look less like a rigid grid
+            vy = Math.cos(x * freq - tick * speedFactor) * 2;
+
+            // Bypass lerp for immediate physics response
+            particleProps[i3] = vx;
+            particleProps[i4] = vy;
+        } else {
+            vx = lerp(particleProps[i3], Math.cos(n), 0.5);
+            vy = lerp(particleProps[i4], Math.sin(n), 0.5);
+        }
+
         life = particleProps[i5];
         ttl = particleProps[i6];
         speed = particleProps[i7];
-        x2 = x + vx * speed;
+        x2 = x + vx * speed; // speed prop acts as a multiplier here
         y2 = y + vy * speed;
         radius = particleProps[i8];
         hue = particleProps[i9];
