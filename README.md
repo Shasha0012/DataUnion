@@ -1,243 +1,489 @@
 <div align="center">
 
-# 🤝 DataUnion
+<img src="https://img.shields.io/badge/🤝_DataUnion-Ethical_AI_Data_Economy-6366f1?style=for-the-badge" alt="DataUnion Banner" style="transform: scale(1.5); margin: 20px 0;" />
 
-### *Building a Transparent, Consent-Driven AI Data Economy*
+### *Empowering Transparency and Consent in the AI Data Economy*
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.1-black?logo=next.js)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-green?logo=supabase)](https://supabase.com/)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+<p align="center">
+Where contributors own their data • Companies get quality datasets • Everyone wins
+</p>
 
-[🚀 Live Demo](#getting-started) • [📐 Technical Docs](TECHNICAL.md) • [📊 Research](RESEARCH.md) • [🔮 Roadmap](ROADMAP.md)
+<p align="center">
+  <a href="https://nextjs.org/"><img src="https://img.shields.io/badge/Next.js-16.1-black?style=flat-square&logo=next.js" alt="Next.js"/></a>
+  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript" alt="TypeScript"/></a>
+  <a href="https://supabase.com/"><img src="https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=flat-square&logo=supabase" alt="Supabase"/></a>
+  <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind-v4-38B2AC?style=flat-square&logo=tailwind-css" alt="Tailwind"/></a>
+</p>
+
+<p align="center">
+  <a href="https://data-union-three.vercel.app/">🚀 Live Demo</a> •
+  <a href="TECHNICAL.md">📐 Architecture</a> •
+  <a href="RESEARCH.md">📊 Research</a> •
+  <a href="ROADMAP.md">🔮 Roadmap</a>
+</p>
+
 
 </div>
 
 ---
 
-## 🎯 The Problem
+<br>
 
-The AI industry is built on a **broken data foundation**:
+## 🚨 The Crisis in AI Data
 
-- 🚨 AI companies scrape data without consent, facing **billion-dollar lawsuits**
-- 💸 Individuals whose data powers AI models receive **zero compensation**
-- 🔒 No transparency in how personal data is used for training
-- ⚖️ Legal battles costing millions (NYT vs OpenAI, Getty vs Stability AI)
-- � Poor data quality from unverified, untracked sources
-
-**The current system exploits contributors and puts AI companies at legal risk.**
-
----
-
-## 💡 Our Solution
-
-**DataUnion** creates a **consent-first marketplace** where everyone benefits:
-
-| Stakeholder | Benefit |
-|-------------|---------|
-| 👥 **Contributors** | Own your data, control usage rights, earn fair compensation |
-| 🏢 **AI Companies** | Access legally-licensed, high-quality datasets with full transparency |
-| 🌍 **Society** | Ethical AI development with traceable, consented data |
-
-### How We're Different:
-
-- ✅ **Explicit consent** at every step with granular permissions
-- ✅ **Full traceability** through immutable audit trails
-- ✅ **Fair compensation** automatically distributed based on actual usage
-- ✅ **Quality-verified** data through AI validation engine
-
----
-
-## ✨ Core Features
+> **The AI industry has a dirty secret: most training data is acquired without consent, compensation, or transparency.**
 
 <table>
 <tr>
-<td width="50%">
+<td width="50%" valign="top">
 
-### 🔐 For Contributors
-- Upload data with full ownership
-- Set granular usage permissions
-- Track every transaction in real-time
-- Receive automatic payouts
-- Revoke consent anytime
+### 💔 The Current Reality
+
+- 🏴‍☠️ **Unauthorized scraping** is the industry standard
+- ⚖️ **Billion-dollar lawsuits** (NYT vs OpenAI, Getty vs Stability AI)
+- 🔒 **Zero consent** from people whose data powers AI
+- 💸 **No compensation** for creators and contributors
+- 📉 **Poor quality** from unverified, untraceable sources
+- 🌐 **Legal uncertainty** threatening AI innovation
 
 </td>
-<td width="50%">
+<td width="50%" valign="top">
 
-### 🏪 For AI Companies
-- Browse verified datasets
-- Transparent pricing & licensing
-- Quality scores for every dataset
-- Immutable usage logs
-- Compliant with regulations
+### 🎯 The Impact
+
+- **$1.5B** settlement paid by Anthropic for copyright infringement
+- **€250M** fine imposed on Google by French regulators
+- **$67.4B** annual losses from AI hallucinations (2024)
+- **50+ active lawsuits** targeting AI companies for data theft
+- **Regulatory crackdown** underway (EU AI Act with €35M fines)
+
+> 📊 *See [RESEARCH.md](RESEARCH.md) for detailed analysis*
 
 </td>
 </tr>
 </table>
 
----
+<br>
 
-## 🛠️ Tech Stack
+## 💡 Introducing DataUnion
 
-**Frontend:** Next.js 16.1 (App Router) • TypeScript • Tailwind CSS v4 • Framer Motion  
-**Backend:** Supabase (PostgreSQL + Auth) • Next.js API Routes  
-**Infrastructure:** Vercel • Supabase Cloud
+<div align="left">
 
-> 📐 **For detailed architecture, diagrams, and technical deep-dive:** [See TECHNICAL.md](TECHNICAL.md)
+### **The world's first consent-driven AI data marketplace**
 
----
+*We're building the infrastructure to make ethical AI development the new standard*
 
-## 🚀 Getting Started
+</div>
 
-### Prerequisites
-- Node.js 18+
-- Supabase account ([create free account](https://supabase.com))
+<br>
 
-### Quick Setup
+### 🎯 How It Works
 
-```bash
-# 1. Clone the repository
-git clone https://github.com/yourusername/DataUnion.git
-cd DataUnion
+<table>
+<tr>
+<td align="left" width="33%">
 
-# 2. Install dependencies
-npm install
+### 👥 For Contributors
 
-# 3. Set up environment variables
-cp env.example .env.local
-# Add your Supabase credentials to .env.local
+**OWN YOUR DATA**
 
-# 4. Initialize database
-# - Go to your Supabase project SQL Editor
-# - Run supabase/schema.sql
-# - Run supabase/seed.sql (optional demo data)
+- Full control over usage rights
+- Fair compensation for every use
+- Complete transparency & tracking
+- Revoke consent anytime
 
-# 5. Start development server
-npm run dev
-```
+</td>
+<td align="center" width="33%">
 
-Open [http://localhost:3000](http://localhost:3000) to see the application.
+### 🏢 For AI Companies
 
-### Environment Variables
+**LICENSE WITH CONFIDENCE**
 
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
+- Legally-sourced, consented data  
+- Quality-verified datasets  
+- Immutable audit trails  
+- GDPR & AI Act compliant  
 
----
+</td>
+<td align="center" width="33%">
 
-## � Documentation
+### 🌍 For Society
 
-| Document | Description |
-|----------|-------------|
-| **[📐 TECHNICAL.md](TECHNICAL.md)** | System architecture, diagrams, database schema, technical flows |
-| **[📊 RESEARCH.md](RESEARCH.md)** | Problem analysis, regulations, market impact, statistics |
-| **[🚀 ROADMAP.md](ROADMAP.md)** | Round 2 improvements and future features |
+**ETHICAL AI FUTURE**
 
----
+- Fair data economy  
+- Full traceability  
+- Legal certainty  
+- Trust-based innovation  
 
-## 🎬 User Flows
+</td>
+</tr>
+</table>
 
-### Contributor Journey:
-1. **Sign up** → Create account and verify email
-2. **Upload data** → Submit with consent preferences
-3. **Get validated** → AI engine assigns quality score
-4. **Track usage** → See which companies licensed your data
-5. **Earn rewards** → Automatic payouts when data is used
+<br>
 
-### Company Journey:
-1. **Browse marketplace** → Discover verified datasets
-2. **Review metrics** → Check quality scores and samples
-3. **Purchase license** → Transparent pricing, instant access
-4. **Use ethically** → Full audit trail of data usage
-5. **Stay compliant** → GDPR-friendly, consent-backed data
-
----
-
-## 📊 Why This Matters
-
-The AI data economy is worth **billions**, but it's built on questionable foundations.
-
-**DataUnion fixes this by:**
-- Creating **legal certainty** for AI companies
-- Ensuring **fair compensation** for data contributors
-- Establishing **transparency** in the AI supply chain
-- Building **trust** through verifiable consent
-
-> 📊 **For detailed market analysis, regulatory landscape, and impact statistics:** [See RESEARCH.md](RESEARCH.md)
-
----
-
-## 🎖️ Hackathon Submission
-
-**Track:** S8 - Open Innovation  
-**Why Open Innovation?** DataUnion doesn't fit traditional categories—we're building fundamental infrastructure for the AI era.
-
----
-
-## 👥 Team
-
-| Name | Role | Contribution |
-|------|------|--------------|
-| **[Your Name]** | Full-Stack Developer | System architecture, backend development, main README, roadmap |
-| **[Friend 1 Name]** | Technical Architect | System diagrams, database design, technical documentation |
-| **[Friend 2 Name]** | Research Analyst | Market research, regulatory analysis, impact assessment |
-
----
-
-## 🔮 What's Next?
-
-This prototype demonstrates the core concept. For Round 2, we're planning:
-
-- 🔐 Production authentication with OAuth
-- 🤖 Advanced ML-powered data quality scoring
-- ⛓️ Blockchain integration for immutable audit trails
-- 💳 Real payment processing (Stripe + crypto)
-- 📱 Mobile apps (iOS & Android)
-- 🌍 API marketplace for third-party integrations
-
-> 🚀 **See complete roadmap:** [ROADMAP.md](ROADMAP.md)
-
----
-
-## � Project Structure
-
-```
-DataUnion/
-├── app/                   # Next.js app router
-│   ├── page.tsx          # Landing page
-│   ├── contributor/      # Contributor dashboard
-│   ├── company/          # Company marketplace
-│   └── walkthrough/      # Interactive demo
-├── components/           # Reusable UI components
-├── lib/                  # Utilities & Supabase client
-├── supabase/            # Database schema & seed data
-├── docs/                # Additional documentation
-├── TECHNICAL.md         # Architecture & diagrams
-├── RESEARCH.md          # Market analysis
-└── ROADMAP.md           # Future plans
-```
-
----
-
-## � License
-
-This project is licensed under the MIT License.
-
----
-
-## 🙌 Acknowledgments
-
-Built for **Hack the Winter - The Second Wave (Angry Bird Edition)**  
-Powered by Next.js, Supabase, and the open-source community
-
----
+## ✨ Core Features
 
 <div align="center">
 
-### 🌟 Building an Ethical AI Future, One Dataset at a Time 🌟
+| Feature | Description | Benefit |
+|:-------:|-------------|---------|
+| 🔐 **Explicit Consent** | Granular permissions with one-click revocation | You stay in control |
+| 📊 **Full Traceability** | Immutable audit logs for every transaction | Complete transparency |
+| 💰 **Fair Compensation** | Automatic payouts based on actual usage | Get paid what you deserve |
+| 🤖 **AI Quality Engine** | Validates data integrity, assigns quality scores | Higher value datasets |
+| 🏪 **Transparent Marketplace** | Browse verified datasets with clear pricing | No hidden terms |
+| 📈 **Real-time Analytics** | Track your data's impact and earnings | Stay informed |
 
-**Questions?** Check our [Technical Docs](TECHNICAL.md) • [Research](RESEARCH.md) • [Roadmap](ROADMAP.md)
+</div>
+
+<br>
+
+<div align="left">
+
+## User Journeys
+
+<details>
+<summary><b>👥 Contributor Journey (Click to expand)</b></summary>
+
+<br>
+
+<div style="text-align: left;">
+
+1. **🔑 Sign Up** → Create account and verify email
+2. **📤 Upload Data** → Submit with customizable consent preferences
+3. **✅ Get Validated** → AI engine analyzes and assigns quality score (0-100)
+4. **📊 Track Usage** → See which companies licensed your data in real-time
+5. **💰 Earn Rewards** → Receive automatic payouts when your data is used
+
+**Result:** You control your data, earn fair compensation, and maintain full transparency.
+
+</div>
+
+</details>
+
+<details>
+<summary><b>🏢 Company Journey (Click to expand)</b></summary>
+
+<br>
+
+<div style="text-align: left;">
+
+1. **🔍 Browse Marketplace** → Discover verified, consented datasets
+2. **📈 Review Metrics** → Check quality scores, sample data, contributor count
+3. **💳 Purchase License** → Transparent pricing, instant access via secure API
+4. **✅ Use Ethically** → Full audit trail of every data access
+5. **📋 Stay Compliant** → Automatic GDPR/AI Act compliance documentation
+
+**Result:** Legal certainty, quality data, and ethical AI development.
+
+</div>
+
+</details>
+
+</div>
+
+<br>
+
+</div>
+
+<div align="center">
+
+## 🎬 See It In Action
+
+<video width="100%" controls>
+  <source src="docs/demo.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+**📹 Demo Flow:** Upload Data → AI Validation → Quality Score → Marketplace → License → Payout
+<br>
+
+## 🏗️ System Architecture
+
+<div align="center">
+
+![DataUnion System Architecture](docs/diagrams/system-architecture.jpg)
+
+*Production-ready architecture: Next.js • Supabase • Payment Gateway*
+
+</div>
+
+### 🔄 Complete Data Journey
+
+<div align="center">
+
+![Data Lifecycle Flow](docs/diagrams/data-lifecycle.jpg)
+
+**From contribution to payout in 7 transparent steps**
+
+</div>
+
+<div align="left">
+
+```
+1. CONTRIBUTE → Upload data with consent preferences
+2. VALIDATE   → AI engine assigns quality score
+3. POOL       → Data added to verified marketplace
+4. LICENSE    → Companies purchase with transparent terms
+5. TRACK      → Every use logged immutably
+6. DISTRIBUTE → Revenue shared fairly
+7. EARN       → Contributors receive automatic payouts
+```
+
+</div>
+
+> 📐 **For deep technical dive:** [TECHNICAL.md](TECHNICAL.md) contains full architecture, database schema, and sequence diagrams
+
+<br>
+
+## 🛠️ Tech Stack
+
+<div align="center">
+
+### **Modern, Production-Ready Technologies**
+
+</div>
+
+| Layer | Technology | Why We Chose It |
+|-------|-----------|-----------------|
+| **Frontend** | Next.js 16.1 (App Router) | Server-side rendering, React Server Components, optimal performance |
+| **Language** | TypeScript 5.0 | Type safety, better developer experience, fewer bugs |
+| **Styling** | Tailwind CSS v4 | Utility-first, responsive design, small bundle size |
+| **Animations** | Framer Motion | Smooth, professional UI interactions |
+| **Backend** | Supabase (PostgreSQL) | Real-time, scalable, built-in auth, RLS security |
+| **Authentication** | Supabase Auth | Secure, battle-tested, multiple providers |
+| **Deployment** | Vercel + Supabase Cloud | Edge network, auto-scaling, zero config |
+
+<br>
+
+<div align="left">
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+```bash
+✅ Node.js 18 or higher
+✅ npm or yarn
+✅ Supabase account (free tier works!)
+```
+
+### Installation in 5 Minutes
+
+```bash
+# 1️⃣ Clone the repository
+git clone https://github.com/[YOUR-GITHUB-USERNAME]/DataUnion.git
+cd DataUnion
+
+# 2️⃣ Install dependencies
+npm install
+
+# 3️⃣ Set up environment variables
+cp env.example .env.local
+
+# Edit .env.local and add:
+# NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+# NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key
+
+# 4️⃣ Initialize database
+# - Open Supabase SQL Editor
+# - Run supabase/schema.sql
+# - (Optional) Run supabase/seed.sql for demo data
+
+# 5️⃣ Start the app
+npm run dev
+
+# ✅ Open http://localhost:3000
+```
+
+</div>
+
+<br>
+
+## 📸 Screenshots & Demo
+
+<div align="center">
+
+### 🌟 Landing Page
+*Premium glassmorphism design with interactive vortex animation*
+
+### 📊 Contributor Dashboard
+*Track contributions, earnings, and consent settings in real-time*
+
+### 🏪 Company Marketplace
+*Browse quality-verified datasets with transparent licensing*
+
+### 🔍 Transparency Walkthrough
+*Interactive demo showing complete data flow from upload to payout*
+
+</div>
+
+> 💡 **Want to see it in action?** Run `npm run dev` and explore the interactive walkthrough!
+
+<br>
+
+## 📚 Complete Documentation
+
+<div align="left">
+
+| Document | What's Inside 
+|:--------:|---------------
+| **[📐 TECHNICAL.md](TECHNICAL.md)** | System architecture • 4 detailed diagrams • Database schema • Scalability & security 
+| **[📊 RESEARCH.md](RESEARCH.md)** | Problem analysis • Regulatory landscape (GDPR, EU AI Act) • Market statistics • Case studies 
+| **[🚀 ROADMAP.md](ROADMAP.md)** | Round 2 features • Technical improvements • Scaling strategy • Timeline
+
+</div>
+
+<br>
+
+<div align="left">
+
+## 📊 Why This Matters
+
+### **The AI Data Economy is Worth Billions, But It's Built on Broken Foundations**
+
+</div>
+<div align="left">
+
+**DataUnion fixes this by providing:**
+
+- ✅ **Legal Certainty** for AI companies (no more lawsuit risk)
+- ✅ **Fair Compensation** for data contributors (share in the value you create)
+- ✅ **Transparency** in the AI supply chain (know where data comes from)
+- ✅ **Trust** through verifiable consent and immutable audit trails
+
+<div align="left">
+
+> 💡 **Market Opportunity:** The ethical AI data market is projected to reach **$15B by 2030**  
+> 📊 **Current Crisis:** **$67.4B** lost annually from poor-quality AI data (hallucinations)  
+> ⚖️ **Legal Risk:** **$1.75B+** already paid in settlements (Anthropic $1.5B + Google €250M)
+
+*Source: [Analysis in RESEARCH.md](RESEARCH.md)*
+
+</div>
+
+<br>
+
+## 👥 Meet the Team
+
+<div align="center">
+
+| Team Member | Role | Contribution |
+|:-----------:|:----:|--------------|
+| **Yashasvi Pandey** | 💻 Full-Stack Developer | System architecture • Prototype • Main README • Roadmap planning |
+| **Daksh Jaitly** | 💻 Full-Stack Developer, Designer | System diagrams • Database design • Prototype • Technical documentation |
+| **Arjun Sharma** | 📊 Research Analyst, Designer | Market research • Regulatory analysis • Impact assessment |
+| **Shivansh Sharma** | Frontend Developer, 📊 Research Analyst | Main README • Roadmap planning • Designing |
+
+**Collaborative Development:** All code reviews, architectural decisions, and documentation done as a team
+
+</div>
+
+<br>
+
+## 🔮 What's Next: Round 2 Vision
+
+This prototype validates the core concept. **For Round 2**, we're taking it to production:
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+### 🚀 New Features
+
+- 🔐 **OAuth Authentication** (Google, GitHub)
+- 🤖 **Advanced ML Quality Scoring**
+- ⛓️ **Blockchain Audit Trails** (Polygon)
+- 💳 **Real Payments** (Stripe + crypto)
+- 📱 **Mobile Apps** (iOS & Android)
+- 🌐 **API Marketplace** for developers
+
+</td>
+<td width="50%" valign="top">
+
+### ⚡ Technical Upgrades
+
+- 📦 **Microservices Architecture**
+- 🔄 **Redis Caching** for performance
+- 📊 **Real-time Analytics Dashboard**
+- 🛡️ **SOC 2 Compliance** path
+- 🌍 **Multi-region Deployment**
+- 📈 **10,000+ concurrent users**
+
+</td>
+</tr>
+</table>
+
+<div align="center">
+
+**🔗 See complete roadmap:** [ROADMAP.md](ROADMAP.md)
+
+</div>
+
+<br>
+
+## 📁 Project Structure
+
+```
+DataUnion/
+├── 📄 README.md              ← You are here!
+├── 📐 TECHNICAL.md           ← Architecture & diagrams
+├── 📊 RESEARCH.md            ← Market analysis & regulations  
+├── 🚀 ROADMAP.md             ← Round 2 improvements
+│
+├── app/                      ← Next.js App Router
+│   ├── page.tsx             ← Landing page
+│   ├── contributor/         ← Contributor dashboard
+│   ├── company/             ← Company marketplace
+│   └── walkthrough/         ← Interactive transparency demo
+│
+├── components/
+│   ├── ui/                  ← Reusable UI components
+│   ├── dashboard/           ← Dashboard widgets
+│   └── walkthrough/         ← Tutorial components
+│
+├── lib/
+│   ├── supabase/            ← Database client & utilities
+│   └── utils.ts             ← Helper functions
+│
+├── supabase/
+│   ├── schema.sql           ← Database schema (7 tables)
+│   └── seed.sql             ← Demo data
+│
+└── docs/
+    └── diagrams/            ← Architecture visualizations
+        ├── system-architecture.jpg
+        ├── data-lifecycle.jpg
+        ├── database-schema.jpg
+        └── sequence-diagram.jpg
+```
+
+<br>
+
+
+<br>
+
+## 🙌 Acknowledgments
+
+<div align="center">
+
+**Built for Hack the Winter - The Second Wave (Angry Bird Edition)**  
+*Graphic Era Hill University, Bhimtal*
+
+Powered by **Next.js** • **Supabase** • **Tailwind CSS** • The Open Source Community
+
+---
+
+### 🌟 Star this repo if you believe in ethical AI! 🌟
+
+<p>
+  <a href="https://github.com/[YOUR-USERNAME]/DataUnion">⭐ Star on GitHub</a> •
+  <a href="TECHNICAL.md">📐 View Architecture</a> •
+  <a href="RESEARCH.md">📊 Read Research</a> •
+  <a href="ROADMAP.md">🚀 See Roadmap</a>
+</p>
+
+**Building an Ethical AI Future, One Dataset at a Time** ❤️
 
 </div>
