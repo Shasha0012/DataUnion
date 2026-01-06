@@ -210,8 +210,287 @@ export default function ContributeData() {
                 };
 
                 console.log('Enhanced analysis complete:', { quality, qualityBreakdown });
+            } else if (type === 'sensor' && !isDemo) {
+                // Enhanced Sensor Data Quality Analysis
+                console.log('Analyzing sensor data quality with enhanced detection...');
+
+                try {
+                    // Try to parse as JSON
+                    const jsonData = JSON.parse(sampleData);
+
+                    // Detect if it's an array of readings or single reading
+                    let isArray = Array.isArray(jsonData);
+                    let readings = isArray ? jsonData : [jsonData];
+
+                    // Check for nested sensor data (common pattern: data inside 'metrics', 'readings', 'data' array)
+                    if (!isArray && readings.length === 1) {
+                        const topLevel = readings[0];
+                        const nestedArrayKeys = ['metrics', 'readings', 'data', 'samples', 'measurements'];
+
+                        for (const key of nestedArrayKeys) {
+                            if (topLevel[key] && Array.isArray(topLevel[key]) && topLevel[key].length > 0) {
+                                console.log(`[Sensor] Found nested data in '${key}' array`);
+                                readings = topLevel[key];
+                                isArray = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (readings.length === 0) {
+                        throw new Error('Empty sensor data');
+                    }
+
+                    // Analyze first reading for structure
+                    const firstReading = readings[0];
+                    const fields = Object.keys(firstReading);
+                    const values = Object.values(firstReading);
+
+                    // 1. DYNAMIC SENSOR TYPE DETECTION
+                    let sensorType = 'unknown';
+                    let detectedFields: string[] = [];
+
+                    // Location sensors
+                    if (fields.some(f => ['latitude', 'longitude', 'lat', 'lon', 'gps'].includes(f.toLowerCase()))) {
+                        sensorType = 'location';
+                        detectedFields = fields.filter(f => ['latitude', 'longitude', 'lat', 'lon', 'altitude', 'speed', 'heading', 'accuracy'].includes(f.toLowerCase()));
+                    }
+                    // Environmental sensors
+                    else if (fields.some(f => ['temperature', 'humidity', 'pressure', 'temp'].includes(f.toLowerCase()))) {
+                        sensorType = 'environmental';
+                        detectedFields = fields.filter(f => ['temperature', 'humidity', 'pressure', 'airquality', 'co2', 'temp'].includes(f.toLowerCase()));
+                    }
+                    // Motion/Accelerometer
+                    else if (fields.some(f => ['accelerometer', 'gyroscope', 'acceleration', 'x', 'y', 'z'].includes(f.toLowerCase()))) {
+                        sensorType = 'motion';
+                        detectedFields = fields.filter(f => ['x', 'y', 'z', 'acceleration', 'gyroscope', 'magnetometer'].includes(f.toLowerCase()));
+                    }
+                    // Health/Biometric
+                    else if (fields.some(f => ['heartrate', 'steps', 'calories', 'bpm', 'spo2'].includes(f.toLowerCase()))) {
+                        sensorType = 'health';
+                        detectedFields = fields.filter(f => ['heartrate', 'steps', 'calories', 'bpm', 'spo2', 'bloodpressure'].includes(f.toLowerCase()));
+                    }
+                    // Light sensors
+                    else if (fields.some(f => ['light', 'lux', 'brightness', 'illuminance'].includes(f.toLowerCase()))) {
+                        sensorType = 'light';
+                        detectedFields = fields.filter(f => ['light', 'lux', 'brightness', 'illuminance', 'uv'].includes(f.toLowerCase()));
+                    }
+                    // Sound sensors
+                    else if (fields.some(f => ['sound', 'noise', 'decibel', 'db', 'audio'].includes(f.toLowerCase()))) {
+                        sensorType = 'sound';
+                        detectedFields = fields.filter(f => ['sound', 'noise', 'decibel', 'db', 'frequency'].includes(f.toLowerCase()));
+                    }
+                    // Proximity/Distance
+                    else if (fields.some(f => ['distance', 'proximity', 'range'].includes(f.toLowerCase()))) {
+                        sensorType = 'proximity';
+                        detectedFields = fields.filter(f => ['distance', 'proximity', 'range'].includes(f.toLowerCase()));
+                    }
+                    // Generic IoT device
+                    else {
+                        sensorType = 'iot';
+                        detectedFields = fields.filter(f => typeof firstReading[f] === 'number');
+                    }
+
+                    // 2. SCHEMA QUALITY CHECK (40%)
+                    let schemaScore = 100;
+                    const warnings: string[] = [];
+
+                    // Check for proper data types
+                    const numericFields = values.filter(v => typeof v === 'number').length;
+                    const stringFields = values.filter(v => typeof v === 'string').length;
+                    const nullFields = values.filter(v => v === null || v === undefined).length;
+
+                    if (nullFields > 0) {
+                        schemaScore -= 20;
+                        warnings.push('⚠️ Contains null/undefined values');
+                    }
+
+                    if (numericFields === 0 && sensorType !== 'iot') {
+                        schemaScore -= 30;
+                        warnings.push('⚠️ No numeric sensor readings found');
+                    }
+
+                    // Check for nested objects (good for complex sensors)
+                    const hasNesting = values.some(v => typeof v === 'object' && v !== null);
+                    if (hasNesting && sensorType !== 'unknown') {
+                        schemaScore = Math.min(schemaScore + 10, 100); // Bonus but cap at 100
+                    }
+
+                    // Ensure schema score is between 0-100
+                    schemaScore = Math.max(0, Math.min(100, schemaScore));
+
+                    // 3. ADAPTIVE VALIDATION (30%)
+                    let validationScore = 100;
+
+                    // Apply sensor-type-specific validation
+                    if (sensorType === 'location') {
+                        const lat = firstReading.latitude || firstReading.lat;
+                        const lon = firstReading.longitude || firstReading.lon;
+
+                        if (lat && (lat < -90 || lat > 90)) {
+                            validationScore -= 30;
+                            warnings.push('⚠️ Invalid Latitude Range');
+                        }
+                        if (lon && (lon < -180 || lon > 180)) {
+                            validationScore -= 30;
+                            warnings.push('⚠️ Invalid Longitude Range');
+                        }
+                        if (firstReading.speed && firstReading.speed < 0) {
+                            validationScore -= 20;
+                            warnings.push('⚠️ Negative Speed Value');
+                        }
+                    } else if (sensorType === 'environmental') {
+                        const temp = firstReading.temperature || firstReading.temp;
+                        const humidity = firstReading.humidity;
+                        const pressure = firstReading.pressure;
+
+                        if (temp && (temp < -100 || temp > 100)) {
+                            validationScore -= 30;
+                            warnings.push('⚠️ Temperature out of range (-100°C to 100°C)');
+                        }
+                        if (humidity && (humidity < 0 || humidity > 100)) {
+                            validationScore -= 30;
+                            warnings.push('⚠️ Humidity must be 0-100%');
+                        }
+                        if (pressure && (pressure < 800 || pressure > 1200)) {
+                            validationScore -= 20;
+                            warnings.push('⚠️ Pressure out of typical range (800-1200 hPa)');
+                        }
+                    } else if (sensorType === 'health') {
+                        const hr = firstReading.heartRate || firstReading.heartrate || firstReading.bpm;
+                        const spo2 = firstReading.spo2 || firstReading.SpO2;
+
+                        if (hr && (hr < 30 || hr > 220)) {
+                            validationScore -= 30;
+                            warnings.push('⚠️ Heart rate out of range (30-220 bpm)');
+                        }
+                        if (spo2 && (spo2 < 0 || spo2 > 100)) {
+                            validationScore -= 30;
+                            warnings.push('⚠️ SpO2 must be 0-100%');
+                        }
+                    } else if (sensorType === 'motion') {
+                        // Check if acceleration values are reasonable (-20g to +20g)
+                        ['x', 'y', 'z'].forEach(axis => {
+                            if (firstReading[axis] && Math.abs(firstReading[axis]) > 20) {
+                                validationScore -= 15;
+                                warnings.push(`⚠️ ${axis.toUpperCase()}-axis value seems extreme`);
+                            }
+                        });
+                    } else if (sensorType === 'light') {
+                        const lux = firstReading.lux || firstReading.light || firstReading.brightness;
+                        if (lux && lux < 0) {
+                            validationScore -= 30;
+                            warnings.push('⚠️ Light level cannot be negative');
+                        }
+                    } else if (sensorType === 'sound') {
+                        const db = firstReading.decibel || firstReading.db || firstReading.noise;
+                        if (db && (db < 0 || db > 140)) {
+                            validationScore -= 30;
+                            warnings.push('⚠️ Sound level out of range (0-140 dB)');
+                        }
+                    }
+
+                    // Ensure validation score is between 0-100
+                    validationScore = Math.max(0, Math.min(100, validationScore));
+
+                    // 4. DATA PRECISION (20%)
+                    const numericValues = values.filter(v => typeof v === 'number');
+                    const precisionScore = numericValues.length > 0
+                        ? (numericValues.filter(v => v.toString().includes('.')).length / numericValues.length * 100)
+                        : 0; // If no numeric values, precision is 0
+
+                    // 5. TEMPORAL COVERAGE & SAMPLING RATE (10%)
+                    let temporalScore = 0;
+
+                    // Check for timestamp
+                    const hasTimestamp = fields.some(f =>
+                        ['timestamp', 'time', 'datetime', 'date', 'ts'].includes(f.toLowerCase())
+                    );
+
+                    if (hasTimestamp) {
+                        temporalScore = 50;
+
+                        // Bonus: Check sampling consistency for arrays
+                        if (isArray && readings.length > 1) {
+                            const timestamps = readings.map(r => {
+                                const tsField = fields.find(f =>
+                                    ['timestamp', 'time', 'datetime', 'ts'].includes(f.toLowerCase())
+                                );
+                                return tsField ? r[tsField] : null;
+                            }).filter(t => t !== null);
+
+                            if (timestamps.length > 1) {
+                                // Check if timestamps are sequential
+                                const intervals = [];
+                                for (let i = 1; i < timestamps.length; i++) {
+                                    intervals.push(Math.abs(timestamps[i] - timestamps[i - 1]));
+                                }
+
+                                // Calculate consistency (lower std dev = more consistent)
+                                const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+                                const variance = intervals.reduce((sum, val) => sum + Math.pow(val - avgInterval, 2), 0) / intervals.length;
+                                const stdDev = Math.sqrt(variance);
+                                const consistency = Math.max(0, 100 - (stdDev / avgInterval * 100));
+
+                                temporalScore = 50 + (consistency / 2); // 50 base + up to 50 bonus
+                            }
+                        } else {
+                            temporalScore = 100; // Single reading with timestamp is perfect
+                        }
+                    }
+
+                    // Build tags
+                    const tags: string[] = [];
+                    tags.push(`#${sensorType.charAt(0).toUpperCase() + sensorType.slice(1)}`);
+
+                    if (schemaScore >= 90) {
+                        tags.push('#WellStructured');
+                    }
+                    if (validationScore >= 90) {
+                        tags.push('#ValidData');
+                    }
+                    if (precisionScore >= 70) {
+                        tags.push('#HighPrecision');
+                    }
+                    if (isArray && readings.length > 1) {
+                        tags.push('#TimeSeries');
+                    }
+                    if (detectedFields.length >= 3) {
+                        tags.push('#MultiSensor');
+                    }
+
+                    // Calculate final quality
+                    quality = Math.round(
+                        (schemaScore * 0.4) +
+                        (validationScore * 0.3) +
+                        (precisionScore * 0.2) +
+                        (temporalScore * 0.1)
+                    );
+
+                    qualityBreakdown = {
+                        domain: Math.round(schemaScore),
+                        coherence: Math.round(validationScore),
+                        entityDensity: Math.round(precisionScore),
+                        novelty: Math.round(temporalScore),
+                        tags,
+                        warnings,
+                        dominantDomain: sensorType,
+                    };
+
+                    console.log('Enhanced sensor analysis complete:', {
+                        quality,
+                        qualityBreakdown,
+                        detectedType: sensorType,
+                        readingsCount: readings.length,
+                        detectedFields
+                    });
+                } catch (error) {
+                    console.error('Failed to parse sensor data:', error);
+                    // Fallback to simple calculation
+                    quality = calculateQualityScore(type, sampleData);
+                }
             } else {
-                // Use simple calculation for demo or non-text data
+                // Use simple calculation for demo or image data
                 quality = isDemo
                     ? selectedSample?.estimatedValue ? 90 + Math.random() * 8 : calculateQualityScore(type, sampleData)
                     : calculateQualityScore(type, sampleData);
@@ -830,7 +1109,7 @@ export default function ContributeData() {
                         </div>
 
                         {/* Quality Analysis Card */}
-                        {contributionResult.qualityBreakdown && contributionResult.dataType === 'text' ? (
+                        {contributionResult.qualityBreakdown && (contributionResult.dataType === 'text' || contributionResult.dataType === 'sensor') ? (
                             <div className="bg-white/[0.02] backdrop-blur-xl border border-white/10 rounded-2xl p-8 mb-8 max-w-4xl mx-auto">
                                 {/* Overall Score */}
                                 <div className="text-center mb-8">
@@ -864,7 +1143,7 @@ export default function ContributeData() {
                                                 key={i}
                                                 className="px-3 py-1 bg-cyan-500/20 border border-cyan-500/30 rounded-full text-sm text-cyan-300"
                                             >
-                                                {tag}
+                                                {tag.replace('#', '')}
                                             </span>
                                         ))}
                                     </div>
@@ -884,60 +1163,88 @@ export default function ContributeData() {
                                 {/* 4-Pillar Breakdown */}
                                 <div className="grid grid-cols-2 gap-4 mb-6">
                                     <div className="bg-black/30 rounded-lg p-4">
-                                        <div className="text-sm font-semibold text-white mb-1">Domain Match</div>
-                                        <div className="text-xs text-gray-500 mb-2">{contributionResult.qualityBreakdown.dominantDomain}</div>
+                                        <div className="text-sm font-semibold text-white mb-1">
+                                            {contributionResult.dataType === 'sensor' ? 'Schema Quality' : 'Domain Match'}
+                                        </div>
+                                        <div className="text-sm text-gray-400 mb-2">
+                                            {contributionResult.dataType === 'sensor' ? 'Structure & Types' : contributionResult.qualityBreakdown.dominantDomain}
+                                        </div>
                                         <div className="flex items-end gap-2 mb-2">
                                             <span className="text-2xl font-bold text-white">{contributionResult.qualityBreakdown.domain}</span>
                                             <span className="text-sm text-gray-500 mb-1">/ 100</span>
                                         </div>
                                         <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
                                             <div
-                                                className="h-full bg-gradient-to-r from-cyan-500 to-cyan-600 transition-all duration-500"
+                                                className={`h-full transition-all duration-500 ${contributionResult.qualityBreakdown.domain >= 50
+                                                    ? 'bg-gradient-to-r from-green-500 to-green-600'
+                                                    : 'bg-gradient-to-r from-red-500 to-red-600'
+                                                    }`}
                                                 style={{ width: `${contributionResult.qualityBreakdown.domain}%` }}
                                             />
                                         </div>
                                     </div>
 
                                     <div className="bg-black/30 rounded-lg p-4">
-                                        <div className="text-sm font-semibold text-white mb-1">Logical Flow</div>
-                                        <div className="text-xs text-gray-500 mb-2">Coherence</div>
+                                        <div className="text-sm font-semibold text-white mb-1">
+                                            {contributionResult.dataType === 'sensor' ? 'Data Validation' : 'Logical Flow'}
+                                        </div>
+                                        <div className="text-sm text-gray-400 mb-2">
+                                            {contributionResult.dataType === 'sensor' ? 'Range Checks' : 'Coherence'}
+                                        </div>
                                         <div className="flex items-end gap-2 mb-2">
                                             <span className="text-2xl font-bold text-white">{contributionResult.qualityBreakdown.coherence}</span>
                                             <span className="text-sm text-gray-500 mb-1">/ 100</span>
                                         </div>
                                         <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
                                             <div
-                                                className="h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-500"
+                                                className={`h-full transition-all duration-500 ${contributionResult.qualityBreakdown.coherence >= 50
+                                                    ? 'bg-gradient-to-r from-green-500 to-green-600'
+                                                    : 'bg-gradient-to-r from-red-500 to-red-600'
+                                                    }`}
                                                 style={{ width: `${contributionResult.qualityBreakdown.coherence}%` }}
                                             />
                                         </div>
                                     </div>
 
                                     <div className="bg-black/30 rounded-lg p-4">
-                                        <div className="text-sm font-semibold text-white mb-1">Information Density</div>
-                                        <div className="text-xs text-gray-500 mb-2">Entities</div>
+                                        <div className="text-sm font-semibold text-white mb-1">
+                                            {contributionResult.dataType === 'sensor' ? 'Data Precision' : 'Information Density'}
+                                        </div>
+                                        <div className="text-sm text-gray-400 mb-2">
+                                            {contributionResult.dataType === 'sensor' ? 'Decimal Values' : 'Entities'}
+                                        </div>
                                         <div className="flex items-end gap-2 mb-2">
                                             <span className="text-2xl font-bold text-white">{contributionResult.qualityBreakdown.entityDensity}</span>
                                             <span className="text-sm text-gray-500 mb-1">/ 100</span>
                                         </div>
                                         <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
                                             <div
-                                                className="h-full bg-gradient-to-r from-purple-500 to-purple-600 transition-all duration-500"
+                                                className={`h-full transition-all duration-500 ${contributionResult.qualityBreakdown.entityDensity >= 50
+                                                    ? 'bg-gradient-to-r from-green-500 to-green-600'
+                                                    : 'bg-gradient-to-r from-red-500 to-red-600'
+                                                    }`}
                                                 style={{ width: `${contributionResult.qualityBreakdown.entityDensity}%` }}
                                             />
                                         </div>
                                     </div>
 
                                     <div className="bg-black/30 rounded-lg p-4">
-                                        <div className="text-sm font-semibold text-white mb-1">Novelty</div>
-                                        <div className="text-xs text-gray-500 mb-2">Uniqueness</div>
+                                        <div className="text-sm font-semibold text-white mb-1">
+                                            {contributionResult.dataType === 'sensor' ? 'Temporal/Sampling' : 'Novelty'}
+                                        </div>
+                                        <div className="text-sm text-gray-400 mb-2">
+                                            {contributionResult.dataType === 'sensor' ? 'Time Consistency' : 'Uniqueness'}
+                                        </div>
                                         <div className="flex items-end gap-2 mb-2">
                                             <span className="text-2xl font-bold text-white">{contributionResult.qualityBreakdown.novelty}</span>
                                             <span className="text-sm text-gray-500 mb-1">/ 100</span>
                                         </div>
                                         <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
                                             <div
-                                                className="h-full bg-gradient-to-r from-pink-500 to-pink-600 transition-all duration-500"
+                                                className={`h-full transition-all duration-500 ${contributionResult.qualityBreakdown.novelty >= 50
+                                                    ? 'bg-gradient-to-r from-green-500 to-green-600'
+                                                    : 'bg-gradient-to-r from-red-500 to-red-600'
+                                                    }`}
                                                 style={{ width: `${contributionResult.qualityBreakdown.novelty}%` }}
                                             />
                                         </div>
@@ -951,7 +1258,10 @@ export default function ContributeData() {
                                             🔍 How This Score Was Calculated
                                         </h4>
                                         <p className="text-sm text-gray-300 font-mono mb-2">
-                                            (Domain × 0.4) + (Flow × 0.4) + (Density × 0.2) • [Veto Applied]
+                                            {contributionResult.dataType === 'sensor'
+                                                ? '(Schema × 0.4) + (Validation × 0.3) + (Precision × 0.2) + (Temporal × 0.1)'
+                                                : '(Domain × 0.4) + (Flow × 0.4) + (Density × 0.2) • [Veto Applied]'
+                                            }
                                         </p>
 
                                     </div>
